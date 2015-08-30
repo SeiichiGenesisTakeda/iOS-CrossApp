@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import <GoogleAppIndexing/GoogleAppIndexing.h>
 
 @interface AppDelegate ()
 
@@ -15,8 +16,29 @@
 @implementation AppDelegate
 
 
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    
+    NSURL *sanitizedURL = [GSDDeepLink handleDeepLink:url];
+    
+    return YES;
+}
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+    
+    NSString *userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+    
+    NSString *customUserAgent = [userAgent stringByAppendingString:@"Shenglong"];
+
+    NSDictionary *dictionary = @{@"UserAgent":customUserAgent};
+    
+    [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+    
     return YES;
 }
 
